@@ -1,10 +1,11 @@
-import '../src/styles/globals.css';
+import '../styles/globals.css';
 
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
+import AppLayout from '../components/layout/AppLayout';
 import createEmotionCache from '../styles/createEmotionCache';
 import { theme } from '../styles/theme';
 
@@ -17,7 +18,7 @@ interface MyAppProps extends AppProps {
 
 function MyApp({
   Component,
-  pageProps,
+  pageProps: { ...pageProps },
   emotionCache = clientSideEmotionCache,
 }: MyAppProps) {
   return (
@@ -27,7 +28,9 @@ function MyApp({
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Component {...pageProps} />
+        <AppLayout>
+          <Component {...pageProps} />
+        </AppLayout>
       </ThemeProvider>
     </CacheProvider>
   );
