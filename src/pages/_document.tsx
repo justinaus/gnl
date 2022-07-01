@@ -21,7 +21,12 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html lang="ko">
-        <DocumentHead></DocumentHead>
+        <DocumentHead>
+          <link
+            href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css"
+            rel="stylesheet"
+          />
+        </DocumentHead>
         <body>
           <Main />
           <NextScript />
