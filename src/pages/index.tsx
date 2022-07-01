@@ -2,8 +2,13 @@ import { Button } from '@mui/material';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import useSWR from 'swr';
+
+import { Response } from './api/restaurants';
 
 const Home: NextPage = () => {
+  const { data } = useSWR<Response>('/api/restaurants');
+
   return (
     <>
       <Head>
@@ -13,6 +18,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
+        {data?.data.length}
         <Button variant="contained">Hello World</Button>
       </main>
 
