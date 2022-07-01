@@ -21,6 +21,7 @@
     "swr": "^1.3.0"
   },
   "devDependencies": {
+    "@types/navermaps": "^3.0.16",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
