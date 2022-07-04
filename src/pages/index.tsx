@@ -1,28 +1,32 @@
-import { Button } from '@mui/material';
+import { Stack } from '@mui/material';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import Script from 'next/script';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import useSWR from 'swr';
 
+import PageLayout from '../components/layout/PageLayout';
 import { Response } from './api/restaurants';
+
+const LAT_LNG = {
+  lat: 37.5007,
+  lng: 127.0308,
+};
 
 const Home: NextPage = () => {
   const { data } = useSWR<Response>('/api/restaurants');
 
   const mapRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => {
-    console.log(111, window);
-
+  const handleLoadNaver = useCallback(() => {
     const naver = (window as any).naver;
 
-    console.log(222, naver);
-  }, []);
+    var mapOptions = {
+      center: new naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
+      // zoom: 10,
+    };
 
-  const handleLoadNaver = useCallback(() => {
-    console.log('handleLoadNaver', window.naver);
+    mapRef.current = new naver.maps.Map('map', mapOptions);
   }, []);
 
   return (
@@ -36,30 +40,22 @@ const Home: NextPage = () => {
         src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NAVER_CLIENT_ID}`}
         onLoad={handleLoadNaver}
       ></Script>
-      <main>
-        {data?.data.length}
-        <div
-          id="map"
-          style={{
-            width: 400,
-            height: 400,
+      <PageLayout>
+        <Stack
+          sx={{
+            display: 'flex',
+            flex: 1,
           }}
-        ></div>
-        <Button variant="contained">Hello World</Button>
-      </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
         >
-          Powered by{' '}
-          <span>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+          <div
+            id="map"
+            style={{
+              width: '100%',
+              flex: 1,
+            }}
+          ></div>
+        </Stack>
+      </PageLayout>
     </>
   );
 };
