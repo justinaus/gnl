@@ -1,20 +1,23 @@
-import { Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 import PageLayout from '../components/layout/PageLayout';
+import { getIsMobileDevice } from '../utils';
 import { Response } from './api/restaurants';
 
 const LAT_LNG = {
-  lat: 37.5007,
-  lng: 127.0308,
+  lat: 37.5005,
+  lng: 127.0309,
 };
 
 const Home: NextPage = () => {
   const { data } = useSWR<Response>('/api/restaurants');
+
+  const [isLoadedNaverMap, setIsLoadedNaverMap] = useState(false);
 
   const mapRef = useRef<HTMLElement | null>(null);
 
@@ -24,10 +27,57 @@ const Home: NextPage = () => {
     var mapOptions = {
       center: new naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
       // zoom: 10,
+      zoomControl: !getIsMobileDevice(),
     };
 
     mapRef.current = new naver.maps.Map('map', mapOptions);
+
+    setIsLoadedNaverMap(true);
   }, []);
+
+  useEffect(() => {
+    if (!data || data.data.length === 0) return;
+
+    if (!isLoadedNaverMap || !mapRef.current) return;
+
+    const naver = (window as any).naver;
+    if (!naver) return;
+
+    new naver.maps.Marker({
+      position: new naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
+      map: mapRef.current,
+    });
+
+    var marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
+      map: mapRef.current,
+      icon: {
+        size: new naver.maps.Size(100, 40),
+        origin: new naver.maps.Point(0, 0),
+        anchor: new naver.maps.Point(50, 40),
+        content: `<div class="naver-marker">
+        <div class="box">
+          <div class="place">
+            <span class="emoji">🍔</span>
+          </div>
+        </div>
+        <div class="box">
+          <span class="name">
+            혜장국혜장국혜장국혜장국혜장국혜장국혜장국
+          </span>
+        </div>
+      </div>`,
+      },
+      shape: {
+        coords: [10, 10, 10],
+        type: 'poly',
+      },
+    });
+
+    var infowindow = new naver.maps.InfoWindow({
+      content: 'hello',
+    });
+  }, [data, isLoadedNaverMap]);
 
   return (
     <>
@@ -47,6 +97,37 @@ const Home: NextPage = () => {
             flex: 1,
           }}
         >
+          <Stack>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography>111</Typography>
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography>222</Typography>
+            </Box>
+          </Stack>
+          <div className="naver-marker">
+            <div className="box">
+              <div className="place">
+                <span className="emoji">🍔</span>
+              </div>
+            </div>
+            <div className="box">
+              <span className="name">
+                혜장국혜장국혜장국혜장국혜장국혜장국혜장국
+              </span>
+            </div>
+          </div>
+
           <div
             id="map"
             style={{

@@ -1,2 +1,42 @@
 @import 'reset.css';
 
+.naver-marker {
+  width: 100px;
+}
+
+.naver-marker .box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: center;
+}
+
+.naver-marker .box .place {
+  width: 32px;
+  height: 40px;
+  background-image: url("/assets/fmd_good_black_24dp.svg");
+  background-size: 32px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+          align-items: center;
+}
+
+.naver-marker .box .place .emoji {
+  font-size: 22px;
+}
+
+.naver-marker .box .name {
+  font-size: 14px;
+  font-weight: bold;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
