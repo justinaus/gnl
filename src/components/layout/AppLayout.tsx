@@ -3,11 +3,11 @@ import React from 'react';
 
 import { APP_MAX_WIDTH } from '../../constants';
 
-type Props = {
-  children: React.ReactNode;
-};
+type Props = {};
 
-export default function AppLayout({ children }: Props) {
+export default function AppLayout({
+  children,
+}: React.PropsWithChildren<Props>) {
   return (
     <Container
       sx={{
