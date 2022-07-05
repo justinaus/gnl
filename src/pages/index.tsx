@@ -19,18 +19,17 @@ const Home: NextPage = () => {
 
   const [isLoadedNaverMap, setIsLoadedNaverMap] = useState(false);
 
-  const mapRef = useRef<HTMLElement | null>(null);
+  // eslint-disable-next-line no-undef
+  const mapRef = useRef<naver.maps.Map | null>(null); // TODO. namespace에서 타입 사용하는 방법?
 
   const handleLoadNaver = useCallback(() => {
-    const naver = (window as any).naver;
-
-    var mapOptions = {
-      center: new naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
+    const map = new window.naver.maps.Map('map', {
+      center: new window.naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
       // zoom: 10,
       zoomControl: !getIsMobileDevice(),
-    };
+    });
 
-    mapRef.current = new naver.maps.Map('map', mapOptions);
+    mapRef.current = map;
 
     setIsLoadedNaverMap(true);
   }, []);
@@ -40,17 +39,14 @@ const Home: NextPage = () => {
 
     if (!isLoadedNaverMap || !mapRef.current) return;
 
-    const naver = (window as any).naver;
-    if (!naver) return;
+    const naver = window.naver;
 
-    new naver.maps.Marker({
-      position: new naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
-      map: mapRef.current,
-    });
+    if (!naver) return;
 
     var marker = new naver.maps.Marker({
       position: new naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
       map: mapRef.current,
+      clickable: false,
       icon: {
         size: new naver.maps.Size(100, 40),
         origin: new naver.maps.Point(0, 0),
@@ -67,10 +63,6 @@ const Home: NextPage = () => {
           </span>
         </div>
       </div>`,
-      },
-      shape: {
-        coords: [10, 10, 10],
-        type: 'poly',
       },
     });
 
