@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
@@ -23,23 +23,34 @@ function createMarker(map: naver.maps.Map, data: Restaurant) {
   const marker = new naver.maps.Marker({
     position: new naver.maps.LatLng(data.latLng.lat, data.latLng.lng),
     map: map,
-    // clickable: false,
     icon: {
-      size: new naver.maps.Size(100, 40),
+      size: new naver.maps.Size(32, 40),
       origin: new naver.maps.Point(0, 0),
-      anchor: new naver.maps.Point(50, 40),
-      content: `<div class="naver-marker">
-      <div class="box">
-        <div class="place">
-          <span class="emoji">${data.emoji || ''}</span>
-        </div>
-      </div>
-      <div class="box">
-        <span class="name">
-          ${data.name}
-        </span>
-      </div>
-    </div>`,
+      anchor: new naver.maps.Point(16, 40),
+      content: `<div class="naver-marker-place"><span class="emoji">${
+        data.emoji || ''
+      }</span></div>`,
+    },
+  });
+
+  return marker;
+}
+
+// eslint-disable-next-line no-undef
+function createNameMarker(map: naver.maps.Map, data: Restaurant) {
+  const naver = window.naver;
+
+  if (!naver) return null;
+
+  const marker = new naver.maps.Marker({
+    position: new naver.maps.LatLng(data.latLng.lat, data.latLng.lng),
+    map: map,
+    clickable: false,
+    icon: {
+      size: new naver.maps.Size(100, 18),
+      origin: new naver.maps.Point(0, 0),
+      anchor: new naver.maps.Point(50, 0),
+      content: `<span class="naver-marker-name">${data.name}</span>`,
     },
   });
 
@@ -60,7 +71,7 @@ const Home: NextPage = () => {
         DEFAULT_LAT_LNG.lat,
         DEFAULT_LAT_LNG.lng,
       ),
-      // zoom: 10,
+      // zoom: 16,
       zoomControl: !getIsMobileDevice(),
     });
 
@@ -107,6 +118,8 @@ const Home: NextPage = () => {
       );
 
       mapEventListeners.push(mapEventListener);
+
+      const nameMarker = createNameMarker(mapRef.current!, restaurant);
     });
 
     var infowindow = new naver.maps.InfoWindow({
@@ -138,37 +151,6 @@ const Home: NextPage = () => {
             flex: 1,
           }}
         >
-          <Stack>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <Typography>111</Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <Typography>222</Typography>
-            </Box>
-          </Stack>
-          <div className="naver-marker">
-            <div className="box">
-              <div className="place">
-                <span className="emoji">🍔</span>
-              </div>
-            </div>
-            <div className="box">
-              <span className="name">
-                혜장국혜장국혜장국혜장국혜장국혜장국혜장국
-              </span>
-            </div>
-          </div>
-
           <div
             id="map"
             style={{
