@@ -1,69 +1,19 @@
 import { Stack } from '@mui/material';
+import { DEFAULT_LAT_LNG } from 'components/home/helper';
+import NaverMap from 'components/home/NaverMap';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import useSWR from 'swr';
+import { getIsMobileDevice } from 'utils';
 
 import PageLayout from '../components/layout/PageLayout';
-import { getIsMobileDevice } from '../utils';
-import { Restaurant, RestaurantsResponse } from './api/restaurants';
-
-const DEFAULT_LAT_LNG = {
-  lat: 37.5005,
-  lng: 127.0309,
-};
-
-// eslint-disable-next-line no-undef
-function createMarker(map: naver.maps.Map, data: Restaurant) {
-  const naver = window.naver;
-
-  if (!naver) return null;
-
-  const marker = new naver.maps.Marker({
-    position: new naver.maps.LatLng(data.latLng.lat, data.latLng.lng),
-    map: map,
-    icon: {
-      size: new naver.maps.Size(32, 40),
-      origin: new naver.maps.Point(0, 0),
-      anchor: new naver.maps.Point(16, 40),
-      content: `<div class="naver-marker-place"><span class="emoji">${
-        data.emoji || ''
-      }</span></div>`,
-    },
-  });
-
-  return marker;
-}
-
-// eslint-disable-next-line no-undef
-function createNameMarker(map: naver.maps.Map, data: Restaurant) {
-  const naver = window.naver;
-
-  if (!naver) return null;
-
-  const marker = new naver.maps.Marker({
-    position: new naver.maps.LatLng(data.latLng.lat, data.latLng.lng),
-    map: map,
-    clickable: false,
-    icon: {
-      size: new naver.maps.Size(100, 18),
-      origin: new naver.maps.Point(0, 0),
-      anchor: new naver.maps.Point(50, 0),
-      content: `<span class="naver-marker-name">${data.name}</span>`,
-    },
-  });
-
-  return marker;
-}
 
 const Home: NextPage = () => {
-  const { data } = useSWR<RestaurantsResponse>('/api/restaurants');
+  // eslint-disable-next-line no-undef
+  const refMap = useRef<naver.maps.Map | null>(null); // TODO. namespace에서 타입 사용하는 방법?
 
   const [isLoadedNaverMap, setIsLoadedNaverMap] = useState(false);
-
-  // eslint-disable-next-line no-undef
-  const mapRef = useRef<naver.maps.Map | null>(null); // TODO. namespace에서 타입 사용하는 방법?
 
   const handleLoadNaver = useCallback(() => {
     const map = new window.naver.maps.Map('map', {
@@ -75,63 +25,16 @@ const Home: NextPage = () => {
       zoomControl: !getIsMobileDevice(),
     });
 
-    mapRef.current = map;
+    refMap.current = map;
 
     setIsLoadedNaverMap(true);
   }, []);
 
   useEffect(() => {
-    if (!data || data.data.length === 0) return;
-
-    if (!isLoadedNaverMap || !mapRef.current) return;
-
-    const naver = window.naver;
-    if (!naver) return;
-
-    // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
-    function getClickHandler(restaurant: Restaurant) {
-      return function (e: any) {
-        console.log(111, restaurant.name);
-        // var marker = markers[seq],
-        //     infoWindow = infoWindows[seq];
-
-        // if (infoWindow.getMap()) {
-        //     infoWindow.close();
-        // } else {
-        //     infoWindow.open(map, marker);
-        // }
-      };
-    }
-
-    // eslint-disable-next-line no-undef
-    let mapEventListeners: naver.maps.MapEventListener[] = [];
-
-    data.data.forEach((restaurant) => {
-      const marker = createMarker(mapRef.current!, restaurant);
-
-      const listener = getClickHandler(restaurant);
-
-      const mapEventListener = naver.maps.Event.addListener(
-        marker,
-        'click',
-        listener,
-      );
-
-      mapEventListeners.push(mapEventListener);
-
-      const nameMarker = createNameMarker(mapRef.current!, restaurant);
-    });
-
-    var infowindow = new naver.maps.InfoWindow({
-      content: 'hello',
-    });
-
     return () => {
-      mapEventListeners.forEach((mapEventListener) => {
-        naver.maps.Event.removeListener(mapEventListener);
-      });
+      refMap.current = null;
     };
-  }, [data, isLoadedNaverMap]);
+  }, []);
 
   return (
     <>
@@ -158,6 +61,7 @@ const Home: NextPage = () => {
               flex: 1,
             }}
           ></div>
+          {isLoadedNaverMap && <NaverMap map={refMap.current!} />}
         </Stack>
       </PageLayout>
     </>
