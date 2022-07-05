@@ -7,15 +7,47 @@ import useSWR from 'swr';
 
 import PageLayout from '../components/layout/PageLayout';
 import { getIsMobileDevice } from '../utils';
-import { Response } from './api/restaurants';
+import { Restaurant, RestaurantsResponse } from './api/restaurants';
 
-const LAT_LNG = {
+const DEFAULT_LAT_LNG = {
   lat: 37.5005,
   lng: 127.0309,
 };
 
+// eslint-disable-next-line no-undef
+function createMarker(map: naver.maps.Map, data: Restaurant) {
+  const naver = window.naver;
+
+  if (!naver) return null;
+
+  const marker = new naver.maps.Marker({
+    position: new naver.maps.LatLng(data.latLng.lat, data.latLng.lng),
+    map: map,
+    // clickable: false,
+    icon: {
+      size: new naver.maps.Size(100, 40),
+      origin: new naver.maps.Point(0, 0),
+      anchor: new naver.maps.Point(50, 40),
+      content: `<div class="naver-marker">
+      <div class="box">
+        <div class="place">
+          <span class="emoji">${data.emoji || ''}</span>
+        </div>
+      </div>
+      <div class="box">
+        <span class="name">
+          ${data.name}
+        </span>
+      </div>
+    </div>`,
+    },
+  });
+
+  return marker;
+}
+
 const Home: NextPage = () => {
-  const { data } = useSWR<Response>('/api/restaurants');
+  const { data } = useSWR<RestaurantsResponse>('/api/restaurants');
 
   const [isLoadedNaverMap, setIsLoadedNaverMap] = useState(false);
 
@@ -24,7 +56,10 @@ const Home: NextPage = () => {
 
   const handleLoadNaver = useCallback(() => {
     const map = new window.naver.maps.Map('map', {
-      center: new window.naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
+      center: new window.naver.maps.LatLng(
+        DEFAULT_LAT_LNG.lat,
+        DEFAULT_LAT_LNG.lng,
+      ),
       // zoom: 10,
       zoomControl: !getIsMobileDevice(),
     });
@@ -40,35 +75,49 @@ const Home: NextPage = () => {
     if (!isLoadedNaverMap || !mapRef.current) return;
 
     const naver = window.naver;
-
     if (!naver) return;
 
-    var marker = new naver.maps.Marker({
-      position: new naver.maps.LatLng(LAT_LNG.lat, LAT_LNG.lng),
-      map: mapRef.current,
-      clickable: false,
-      icon: {
-        size: new naver.maps.Size(100, 40),
-        origin: new naver.maps.Point(0, 0),
-        anchor: new naver.maps.Point(50, 40),
-        content: `<div class="naver-marker">
-        <div class="box">
-          <div class="place">
-            <span class="emoji">🍔</span>
-          </div>
-        </div>
-        <div class="box">
-          <span class="name">
-            혜장국혜장국혜장국혜장국혜장국혜장국혜장국
-          </span>
-        </div>
-      </div>`,
-      },
+    // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
+    function getClickHandler(restaurant: Restaurant) {
+      return function (e: any) {
+        console.log(111, restaurant.name);
+        // var marker = markers[seq],
+        //     infoWindow = infoWindows[seq];
+
+        // if (infoWindow.getMap()) {
+        //     infoWindow.close();
+        // } else {
+        //     infoWindow.open(map, marker);
+        // }
+      };
+    }
+
+    // eslint-disable-next-line no-undef
+    let mapEventListeners: naver.maps.MapEventListener[] = [];
+
+    data.data.forEach((restaurant) => {
+      const marker = createMarker(mapRef.current!, restaurant);
+
+      const listener = getClickHandler(restaurant);
+
+      const mapEventListener = naver.maps.Event.addListener(
+        marker,
+        'click',
+        listener,
+      );
+
+      mapEventListeners.push(mapEventListener);
     });
 
     var infowindow = new naver.maps.InfoWindow({
       content: 'hello',
     });
+
+    return () => {
+      mapEventListeners.forEach((mapEventListener) => {
+        naver.maps.Event.removeListener(mapEventListener);
+      });
+    };
   }, [data, isLoadedNaverMap]);
 
   return (

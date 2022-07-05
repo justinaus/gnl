@@ -4,27 +4,34 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { db } from '../../firebase';
 
-type Data = {
+export type Restaurant = {
   name: string;
   point: number;
   link: {
-    mangpl: string;
-    naver: string;
+    mangpl?: string;
+    naver?: string;
   };
+  latLng: {
+    lat: number;
+    lng: number;
+  };
+  emoji?: string;
 };
 
-export type Response = {
-  data: Data[];
+export type RestaurantsResponse = {
+  data: Restaurant[];
 };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Response>,
+  res: NextApiResponse<RestaurantsResponse>,
 ) {
   const restaurantsCol = collection(db, 'restaurants');
 
   const restaurantsSnapshot = await getDocs(restaurantsCol);
-  const list = restaurantsSnapshot.docs.map((doc) => doc.data()) as Data[];
+  const list = restaurantsSnapshot.docs.map((doc) =>
+    doc.data(),
+  ) as Restaurant[];
 
   res.status(200).json({ data: list });
 }
