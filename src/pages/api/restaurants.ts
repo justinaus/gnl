@@ -1,8 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { db } from '@lib/firebase';
 import { collection, getDocs } from 'firebase/firestore/lite';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-import { db } from '../../firebase';
 
 export type Restaurant = {
   name: string;

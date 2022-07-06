@@ -1,15 +1,14 @@
-import '../styles/globals.css';
+import '@styles/globals.css';
 
+import AppLayout from '@components/layout/AppLayout';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import createEmotionCache from '@styles/createEmotionCache';
+import { theme } from '@styles/theme';
 import axios from 'axios';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { SWRConfig } from 'swr';
-
-import AppLayout from '../components/layout/AppLayout';
-import createEmotionCache from '../styles/createEmotionCache';
-import { theme } from '../styles/theme';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();

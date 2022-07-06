@@ -1,4 +1,4 @@
-import { Restaurant } from 'pages/api/restaurants';
+import { Restaurant } from '@pages/api/restaurants';
 
 export const DEFAULT_LAT_LNG = {
   lat: 37.5005,

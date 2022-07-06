@@ -1,11 +1,11 @@
+import { DEFAULT_LAT_LNG } from '@components/home/helper';
+import NaverMap from '@components/home/NaverMap';
 import { Stack } from '@mui/material';
-import { DEFAULT_LAT_LNG } from 'components/home/helper';
-import NaverMap from 'components/home/NaverMap';
+import { getIsMobileDevice } from '@utils/*';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Script from 'next/script';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getIsMobileDevice } from 'utils';
 
 import PageLayout from '../components/layout/PageLayout';
 

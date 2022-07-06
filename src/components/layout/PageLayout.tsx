@@ -1,7 +1,6 @@
+import ErrorBoundary from '@components/shared/ErrorBoundary';
 import { Box } from '@mui/material';
 import React from 'react';
-
-import ErrorBoundary from '../shared/ErrorBoundary';
 
 type Props = {};
 

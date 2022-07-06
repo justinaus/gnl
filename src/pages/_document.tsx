@@ -1,4 +1,5 @@
 import createEmotionServer from '@emotion/server/create-instance';
+import createEmotionCache from '@styles/createEmotionCache';
 import Document, {
   DocumentContext,
   Head as DocumentHead,
@@ -7,8 +8,6 @@ import Document, {
   NextScript,
 } from 'next/document';
 import React from 'react';
-
-import createEmotionCache from '../styles/createEmotionCache';
 
 // https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_document.js
 

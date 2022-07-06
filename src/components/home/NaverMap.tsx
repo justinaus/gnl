@@ -1,4 +1,4 @@
-import { Restaurant, RestaurantsResponse } from 'pages/api/restaurants';
+import { Restaurant, RestaurantsResponse } from '@pages/api/restaurants';
 import { useEffect } from 'react';
 import useSWR from 'swr';
 

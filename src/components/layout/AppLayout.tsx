@@ -1,7 +1,6 @@
+import { APP_MAX_WIDTH } from '@constants/*';
 import { Container } from '@mui/material';
 import React from 'react';
-
-import { APP_MAX_WIDTH } from '../../constants';
 
 type Props = {};
 
