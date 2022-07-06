@@ -14,6 +14,11 @@
           align-items: center;
 }
 
+/* TODO. */
+.naver-marker-place-blue-image {
+  background-image: url("/assets/fmd_good_blue_24dp.svg");
+}
+
 .naver-marker-place .emoji {
   padding-bottom: 6px;
   font-size: 22px;

@@ -2,7 +2,7 @@ import { Restaurant, RestaurantsResponse } from '@pages/api/restaurants';
 import { useEffect } from 'react';
 import useSWR from 'swr';
 
-import { createMarker, createNameMarker } from './helper';
+import { createMarker, createNameMarker, DEFAULT_LAT_LNG } from './helper';
 
 type Props = {
   // eslint-disable-next-line no-undef
@@ -11,6 +11,24 @@ type Props = {
 
 export default function NaverMap({ map }: Props) {
   const { data } = useSWR<RestaurantsResponse>('/api/restaurants');
+
+  useEffect(() => {
+    const naver = window.naver;
+    if (!naver) return;
+
+    const defaultMarker = createMarker(
+      map,
+      DEFAULT_LAT_LNG.lat,
+      DEFAULT_LAT_LNG.lng,
+      '🥩',
+      true,
+    );
+
+    return () => {
+      console.log(11);
+      defaultMarker?.setMap(null);
+    };
+  }, [map]);
 
   useEffect(() => {
     if (!data?.data) return;
@@ -35,9 +53,19 @@ export default function NaverMap({ map }: Props) {
 
     // eslint-disable-next-line no-undef
     let mapEventListeners: naver.maps.MapEventListener[] = [];
+    // eslint-disable-next-line no-undef
+    let markers: naver.maps.Marker[] = [];
+    let nameMarkers: naver.maps.Marker[] = [];
 
     data.data.forEach((restaurant) => {
-      const marker = createMarker(map, restaurant);
+      const { latLng, emoji, name } = restaurant;
+      const { lat, lng } = latLng;
+
+      const marker = createMarker(map, lat, lng, emoji || '');
+
+      if (!marker) return;
+
+      markers.push(marker);
 
       const listener = getClickHandler(restaurant);
 
@@ -49,7 +77,7 @@ export default function NaverMap({ map }: Props) {
 
       mapEventListeners.push(mapEventListener);
 
-      const nameMarker = createNameMarker(map, restaurant);
+      const nameMarker = createNameMarker(map, lat, lng, name);
     });
 
     var infowindow = new naver.maps.InfoWindow({
