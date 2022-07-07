@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-undef
+import namespaceNaverMaps = naver.maps; // TODO.
+
 import { Restaurant, RestaurantsResponse } from '@pages/api/restaurants';
 import { useEffect } from 'react';
 import useSWR from 'swr';
@@ -5,8 +8,7 @@ import useSWR from 'swr';
 import { createMarker, createNameMarker, DEFAULT_LAT_LNG } from './helper';
 
 type Props = {
-  // eslint-disable-next-line no-undef
-  map: naver.maps.Map;
+  map: namespaceNaverMaps.Map;
 };
 
 export default function NaverMap({ map }: Props) {
@@ -51,11 +53,9 @@ export default function NaverMap({ map }: Props) {
       };
     }
 
-    // eslint-disable-next-line no-undef
-    let mapEventListeners: naver.maps.MapEventListener[] = [];
-    // eslint-disable-next-line no-undef
-    let markers: naver.maps.Marker[] = [];
-    let nameMarkers: naver.maps.Marker[] = [];
+    let mapEventListeners: namespaceNaverMaps.MapEventListener[] = [];
+    let markers: namespaceNaverMaps.Marker[] = [];
+    let nameMarkers: namespaceNaverMaps.Marker[] = [];
 
     data.data.forEach((restaurant) => {
       const { latLng, emoji, name } = restaurant;
