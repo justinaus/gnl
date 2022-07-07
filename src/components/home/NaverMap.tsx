@@ -1,11 +1,13 @@
 // eslint-disable-next-line no-undef
 import namespaceNaverMaps = naver.maps; // TODO.
 
+import { usePopup } from '@context/PopupProvider';
 import { Restaurant, RestaurantsResponse } from '@pages/api/restaurants';
 import { useEffect } from 'react';
 import useSWR from 'swr';
 
 import { createMarker, createNameMarker, DEFAULT_LAT_LNG } from './helper';
+import RestaurantPopupContent from './popup/RestaurantPopupContent';
 
 type Props = {
   map: namespaceNaverMaps.Map;
@@ -13,6 +15,8 @@ type Props = {
 
 export default function NaverMap({ map }: Props) {
   const { data } = useSWR<RestaurantsResponse>('/api/restaurants');
+
+  const { openPopup, closePopup } = usePopup();
 
   useEffect(() => {
     const naver = window.naver;
@@ -39,17 +43,17 @@ export default function NaverMap({ map }: Props) {
     if (!naver) return;
 
     // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
-    function getClickHandler(restaurant: Restaurant) {
+    function getClickHandler(
+      restaurant: Restaurant,
+      marker: namespaceNaverMaps.Marker,
+    ) {
       return function (e: any) {
-        console.log(111, restaurant.name);
-        // var marker = markers[seq],
-        //     infoWindow = infoWindows[seq];
-
-        // if (infoWindow.getMap()) {
-        //     infoWindow.close();
-        // } else {
-        //     infoWindow.open(map, marker);
-        // }
+        openPopup(
+          <RestaurantPopupContent
+            onClickClose={closePopup}
+            // onSubmit={handleSubmitCancel}
+          />,
+        );
       };
     }
 
@@ -67,7 +71,7 @@ export default function NaverMap({ map }: Props) {
 
       markers.push(marker);
 
-      const listener = getClickHandler(restaurant);
+      const listener = getClickHandler(restaurant, marker);
 
       const mapEventListener = naver.maps.Event.addListener(
         marker,
@@ -79,10 +83,6 @@ export default function NaverMap({ map }: Props) {
       const nameMarker = createNameMarker(map, lat, lng, name);
       if (!nameMarker) return;
       nameMarkers.push(nameMarker);
-    });
-
-    var infowindow = new naver.maps.InfoWindow({
-      content: 'hello',
     });
 
     return () => {
