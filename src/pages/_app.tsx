@@ -1,6 +1,7 @@
 import '@styles/globals.css';
 
 import AppLayout from '@components/layout/AppLayout';
+import PopupProvider from '@context/PopupProvider';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import createEmotionCache from '@styles/createEmotionCache';
@@ -35,9 +36,11 @@ function MyApp({
             fetcher: (url) => axios.get(url).then((res) => res.data),
           }}
         >
-          <AppLayout>
-            <Component {...pageProps} />
-          </AppLayout>
+          <PopupProvider>
+            <AppLayout>
+              <Component {...pageProps} />
+            </AppLayout>
+          </PopupProvider>
         </SWRConfig>
       </ThemeProvider>
     </CacheProvider>
