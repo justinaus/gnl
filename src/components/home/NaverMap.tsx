@@ -74,10 +74,11 @@ export default function NaverMap({ map }: Props) {
         'click',
         listener,
       );
-
       mapEventListeners.push(mapEventListener);
 
       const nameMarker = createNameMarker(map, lat, lng, name);
+      if (!nameMarker) return;
+      nameMarkers.push(nameMarker);
     });
 
     var infowindow = new naver.maps.InfoWindow({
@@ -85,8 +86,12 @@ export default function NaverMap({ map }: Props) {
     });
 
     return () => {
-      mapEventListeners.forEach((mapEventListener) => {
-        naver.maps.Event.removeListener(mapEventListener);
+      markers.forEach((marker, index) => {
+        marker.setMap(null);
+        naver.maps.Event.removeListener(mapEventListeners[index]);
+        if (index < nameMarkers.length) {
+          nameMarkers[index].setMap(null);
+        }
       });
     };
   }, [data, map]);
