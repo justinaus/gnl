@@ -16,7 +16,7 @@ type Props = {
 export default function NaverMap({ map }: Props) {
   const { data } = useSWR<RestaurantsResponse>('/api/restaurants');
 
-  const { openPopup, closePopup } = usePopup();
+  const { openPopup } = usePopup();
 
   useEffect(() => {
     const naver = window.naver;
@@ -43,17 +43,9 @@ export default function NaverMap({ map }: Props) {
     if (!naver) return;
 
     // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
-    function getClickHandler(
-      restaurant: Restaurant,
-      marker: namespaceNaverMaps.Marker,
-    ) {
-      return function (e: any) {
-        openPopup(
-          <RestaurantPopupContent
-            onClickClose={closePopup}
-            // onSubmit={handleSubmitCancel}
-          />,
-        );
+    function getClickHandler(restaurant: Restaurant) {
+      return function () {
+        openPopup(<RestaurantPopupContent data={restaurant} />);
       };
     }
 
@@ -71,7 +63,7 @@ export default function NaverMap({ map }: Props) {
 
       markers.push(marker);
 
-      const listener = getClickHandler(restaurant, marker);
+      const listener = getClickHandler(restaurant);
 
       const mapEventListener = naver.maps.Event.addListener(
         marker,
@@ -94,7 +86,7 @@ export default function NaverMap({ map }: Props) {
         }
       });
     };
-  }, [data, map]);
+  }, [data, map, openPopup]);
 
   return null;
 }
