@@ -4,6 +4,8 @@ import { Restaurant } from '@pages/api/restaurants';
 import React from 'react';
 import { useMemo } from 'react';
 
+import Links from './Links';
+
 interface Props {
   data: Restaurant;
 }
@@ -80,8 +82,8 @@ export default function RestaurantPopupContent({ data }: Props) {
         <LikeDislike id={data.id} />
         <Point data={data} />
       </Stack>
-      <Stack spacing={2}>
-        <Typography variant="body1">{content}</Typography>
+      <Stack spacing={4}>
+        {content && <Typography variant="body1">{content}</Typography>}
         {hashtags && (
           <Typography
             variant="body1"
@@ -92,6 +94,7 @@ export default function RestaurantPopupContent({ data }: Props) {
             {hashtags}
           </Typography>
         )}
+        <Links name={data.name} naverId={data.naverId} link={data.link} />
       </Stack>
     </Stack>
   );
