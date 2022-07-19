@@ -93,8 +93,8 @@ export default function PopupProvider({ children }: PropsWithChildren<{}>) {
               backgroundColor: '#fff',
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
-              paddingY: 6,
-              paddingX: 5,
+              paddingY: 8,
+              paddingX: 6,
             }}
           >
             {popupChildren}

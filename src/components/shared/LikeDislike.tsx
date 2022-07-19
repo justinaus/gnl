@@ -24,7 +24,12 @@ export default function LikeDislike({ id }: Props) {
           alignItems: 'center',
         }}
       >
-        <ThumbUpIcon fontSize="inherit" />
+        <ThumbUpIcon
+          fontSize="inherit"
+          sx={{
+            color: (theme) => theme.palette.grey[600],
+          }}
+        />
         <Typography>0</Typography>
       </Stack>
       <Stack
@@ -34,8 +39,13 @@ export default function LikeDislike({ id }: Props) {
           alignItems: 'center',
         }}
       >
-        <ThumbDownIcon fontSize="inherit" />
-        <Typography>10</Typography>
+        <ThumbDownIcon
+          fontSize="inherit"
+          sx={{
+            color: (theme) => theme.palette.grey[600],
+          }}
+        />
+        <Typography>0</Typography>
       </Stack>
     </Stack>
   );
