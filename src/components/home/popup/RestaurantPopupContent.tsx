@@ -69,18 +69,18 @@ export default function RestaurantPopupContent({ data }: Props) {
   }, [data.hashtags]);
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={4}>
       <Title data={data} />
+      <Stack
+        direction={'row'}
+        sx={{
+          justifyContent: 'space-between',
+        }}
+      >
+        <LikeDislike id={data.id} />
+        <Point data={data} />
+      </Stack>
       <Stack spacing={2}>
-        <Stack
-          direction={'row'}
-          sx={{
-            justifyContent: 'space-between',
-          }}
-        >
-          <LikeDislike id={data.id} />
-          <Point data={data} />
-        </Stack>
         <Typography variant="body1">{content}</Typography>
         {hashtags && (
           <Typography
